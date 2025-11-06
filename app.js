@@ -120,16 +120,15 @@ function openCaseModal(caseItem) {
         tg.openLink(caseItem.refLink);
     };
     
-    document.getElementById('payoutButton').onclick = async () => {
-        const user = tg.initDataUnsafe.user;
-        if (user) {
-            const result = await submitPayoutRequest({
-                telegramId: user.id,
-                username: user.username || `user_${user.id}`,
-                ggStandoffId: "НЕОБХОДИМО ВВЕСТИ ID", // ВРЕМЕННО - ПОТОМ ДОБАВИМ ФОРМУ
-                caseName: caseItem.name,
-                promoCode: caseItem.promoCode
-            });
+    document.getElementById('payoutButton').onclick = () => {
+    
+    tg.openLink("https://docs.google.com/forms/d/e/1FAIpQLSd-T5JG8bylYHv4p1pT3RuwlnwCZ6pEt9DYHx_mqUmJpsaC_g/viewform");
+    
+    tg.showPopup({
+        title: "📝 Заполните форму",
+        message: `Для получения кейса заполните форму:\n\n1. Введите ваш ID с GGStandoff\n2. Выберите кейс и промокод\n3. Укажите сумму депозита\n\nПосле проверки зачислим кейс в течение 24 часов!`
+    });
+};
             
             if (result && result.status === "success") {
                 tg.showPopup({
