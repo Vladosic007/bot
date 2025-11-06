@@ -1,321 +1,155 @@
-[file name]: index.html
+[file name]: index-fixed.html
 [file content begin]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GGStandoff | Бесплатные кейсы</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>GGSTANDOFF | Кейсы</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'JetBrains Mono', monospace;
             background: #0a0a0a;
-            color: #ffffff;
-            padding: 15px;
-            min-height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
         }
-
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            border: 1px solid #00ffff;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            margin-bottom: 20px;
+            color: #00ffff;
         }
-
-        .title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #00ffff, #0080ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
         .cases-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .case-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            background: #1a1a2e;
             border: 2px solid #00ffff;
-            border-radius: 15px;
+            border-radius: 10px;
             padding: 15px;
+            text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
-
-        .case-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff);
-            border-radius: 17px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .case-card:hover::before {
-            opacity: 1;
-        }
-
-        .case-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
-        }
-
         .case-image {
             width: 100%;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #333;
-            max-width: 100%;
-            height: auto;
-            display: block;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
-
         .case-name {
-            font-weight: bold;
-            font-size: 1rem;
             color: #00ffff;
+            font-weight: bold;
             margin-bottom: 5px;
         }
-
-        .case-deposit {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
         .promo-badge {
-            background: linear-gradient(45deg, #ff0080, #ff00ff);
+            background: #ff00ff;
             color: white;
             padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
+            border-radius: 5px;
+            font-size: 12px;
             margin-top: 8px;
-            display: inline-block;
         }
-
-        /* Модальное окно в стиле GGSTANDOFF */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            margin: 20px;
-            padding: 25px;
-            border-radius: 20px;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-            position: relative;
-            max-width: 400px;
-            margin: 5% auto;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: #00ffff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-image {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 2px solid #333;
-            max-width: 100%;
-            height: auto;
-        }
-
-        .modal-description {
-            color: #ccc;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .modal-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .modal-button {
-            background: linear-gradient(45deg, #00ffff, #0080ff);
-            color: #000;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .modal-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
-        }
-
-        .payout-button {
-            background: linear-gradient(45deg, #ff0080, #ff00ff);
-            color: white;
-        }
-
         .instructions {
             background: rgba(0, 255, 255, 0.1);
             border: 1px solid #00ffff;
             border-radius: 10px;
             padding: 15px;
             margin-top: 20px;
-            font-size: 0.8rem;
-        }
-
-        .step {
-            margin-bottom: 8px;
-            color: #ccc;
-        }
-
-        .step-number {
-            color: #00ffff;
-            font-weight: bold;
-        }
-
-        /* МОБИЛЬНЫЕ СТИЛИ - ВАЖНО! */
-        @media (max-width: 768px) {
-            .cases-grid {
-                grid-template-columns: 1fr !important; /* Одна колонка на мобильных */
-                gap: 12px;
-            }
-            
-            .case-card {
-                padding: 12px;
-                margin: 5px 0;
-            }
-            
-            .modal-content {
-                margin: 10px;
-                padding: 20px;
-                width: 90%;
-                max-width: none;
-            }
-            
-            .header {
-                font-size: 1.3rem;
-                padding: 12px;
-                margin-bottom: 20px;
-            }
-            
-            .title {
-                font-size: 1.5rem;
-            }
-            
-            body {
-                padding: 10px;
-            }
-            
-            /* Убираем сложные анимации для мобильных */
-            .case-card::before {
-                display: none;
-            }
-            
-            .case-card:hover {
-                transform: none;
-                box-shadow: none;
-            }
-            
-            .modal-button:hover {
-                transform: none;
-                box-shadow: none;
-            }
-        }
-
-        /* Стили для состояний загрузки и ошибок */
-        .loading {
-            color: #00ffff;
-            text-align: center;
-            padding: 20px;
-            font-size: 1.1rem;
-        }
-
-        .error {
-            color: #ff4444;
-            text-align: center;
-            padding: 20px;
-            border: 1px solid #ff4444;
-            border-radius: 10px;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="title">#GGSTANDOFF</div>
-        <div class="subtitle">🎁 Получи кейс за депозит</div>
+        <h1>#GGSTANDOFF</h1>
+        <p>🎁 Получи кейс за депозит</p>
     </div>
 
     <div class="cases-grid" id="cases-grid">
-        <div class="loading">Загружаем кейсы...</div>
+        <!-- Кейсы появятся здесь -->
     </div>
 
     <div class="instructions">
-        <div class="step"><span class="step-number">1.</span> Выбери кейс</div>
-        <div class="step"><span class="step-number">2.</span> Пополни счёт с промокодом</div>
-        <div class="step"><span class="step-number">3.</span> Запроси вывод кейса</div>
-        <div class="step"><span class="step-number">4.</span> Получи кейс на сайте GGSTANDOFF</div>
+        <p><strong>1.</strong> Выбери кейс</p>
+        <p><strong>2.</strong> Пополни счёт с промокодом</p>
+        <p><strong>3.</strong> Запроси вывод кейса</p>
+        <p><strong>4.</strong> Получи кейс на сайте GGSTANDOFF</p>
     </div>
 
-    <div class="modal" id="caseModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeModal">×</button>
-            <img id="modalImage" class="modal-image" src="" alt="">
-            <div id="modalDescription" class="modal-description"></div>
-            <div class="modal-buttons">
-                <button id="depositButton" class="modal-button">💳 Пополнить с промокодом</button>
-                <button id="payoutButton" class="modal-button payout-button">🎁 Запросить вывод кейса</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        // ПРОСТОЙ И РАБОЧИЙ КОД
+        console.log("🚀 Starting GGSTANDOFF...");
+        
+        const cases = [
+            {
+                id: 1,
+                name: "Сектор 42",
+                image: "https://placehold.co/300x200/1a1a2e/00ffff/png?text=Сектор+42",
+                minDeposit: 150,
+                promoCode: "001"
+            },
+            {
+                id: 2,
+                name: "Биоопасность",
+                image: "https://placehold.co/300x200/1a1a2e/00ffff/png?text=Биоопасность",
+                minDeposit: 160,
+                promoCode: "002"
+            },
+            {
+                id: 3,
+                name: "Похищение", 
+                image: "https://placehold.co/300x200/1a1a2e/00ffff/png?text=Похищение",
+                minDeposit: 350,
+                promoCode: "003"
+            },
+            {
+                id: 4,
+                name: "Обломки НЛО",
+                image: "https://placehold.co/300x200/1a1a2e/00ffff/png?text=Обломки+НЛО",
+                minDeposit: 3800,
+                promoCode: "004"
+            }
+        ];
 
-    <script src="app.js?v=3.0"></script>
+        function renderCases() {
+            const grid = document.getElementById('cases-grid');
+            console.log("Rendering cases...");
+            
+            if (!grid) {
+                console.error("Cannot find cases-grid!");
+                return;
+            }
+            
+            grid.innerHTML = '';
+            
+            cases.forEach(caseItem => {
+                const card = document.createElement('div');
+                card.className = 'case-card';
+                card.innerHTML = `
+                    <img src="${caseItem.image}" alt="${caseItem.name}" class="case-image">
+                    <div class="case-name">${caseItem.name}</div>
+                    <div>Мин. депозит: ${caseItem.minDeposit}₽</div>
+                    <div class="promo-badge">Промокод: ${caseItem.promoCode}</div>
+                `;
+                
+                card.onclick = () => {
+                    alert(`Кейс: ${caseItem.name}\nПромокод: ${caseItem.promoCode}\n\nДля пополнения перейдите на сайт!`);
+                };
+                
+                grid.appendChild(card);
+            });
+            
+            console.log("Cases rendered successfully!");
+        }
+
+        // Запускаем когда страница загрузится
+        document.addEventListener('DOMContentLoaded', renderCases);
+        
+        // Если DOM уже загружен
+        if (document.readyState === 'complete') {
+            renderCases();
+        }
+    </script>
 </body>
 </html>
 [file content end]
