@@ -1,5 +1,4 @@
 let tg = window.Telegram.WebApp;
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxI0MVhsaRWeCsG8kMnpwJwKIGQ5aZf7JkO6b0VK0S4jZk45Bie9X7QZ2DqyBkzH_3c/exec";
 
 const cases = [
     {
@@ -40,52 +39,9 @@ const cases = [
     }
 ];
 
-async function registerUser(userData) {
-    try {
-        const response = await fetch(BACKEND_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                action: "register",
-                ...userData
-            })
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Registration error:", error);
-    }
-}
-
-async function submitPayoutRequest(requestData) {
-    try {
-        const response = await fetch(BACKEND_URL, {
-            method: "POST", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                action: "payout",
-                ...requestData
-            })
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Payout request error:", error);
-    }
-}
-
 function main() {
     tg.ready();
     tg.expand();
-    
-    const user = tg.initDataUnsafe.user;
-    if (user) {
-        registerUser({
-            telegramId: user.id,
-            username: user.username || `user_${user.id}`,
-            firstName: user.first_name,
-            lastName: user.last_name
-        });
-    }
-    
     renderCases();
 }
 
@@ -116,27 +72,19 @@ function openCaseModal(caseItem) {
     modalImage.src = caseItem.image;
     modalDescription.textContent = caseItem.description;
     
+    // Кнопка ПОПОЛНИТЬ
     document.getElementById('depositButton').onclick = () => {
         tg.openLink(caseItem.refLink);
     };
     
+    // Кнопка ВЫВОД - ОТКРЫВАЕМ GOOGLE FORM
     document.getElementById('payoutButton').onclick = () => {
-    
-    tg.openLink("https://docs.google.com/forms/d/e/1FAIpQLSd-T5JG8bylYHv4p1pT3RuwlnwCZ6pEt9DYHx_mqUmJpsaC_g/viewform");
-    
-    tg.showPopup({
-        title: "📝 Заполните форму",
-        message: `Для получения кейса заполните форму:\n\n1. Введите ваш ID с GGStandoff\n2. Выберите кейс и промокод\n3. Укажите сумму депозита\n\nПосле проверки зачислим кейс в течение 24 часов!`
-    });
-};
-            
-            if (result && result.status === "success") {
-                tg.showPopup({
-                    title: "Запрос отправлен!",
-                    message: `Администратор проверит депозит с промокодом ${caseItem.promoCode}`
-                });
-            }
-        }
+        tg.openLink("https://docs.google.com/forms/d/e/1FAIpQLSd-T5JG8bylYHv4p1pT3RuwlnwCZ6pEt9DYHx_mqUmJpsaC_g/viewform");
+        
+        tg.showPopup({
+            title: "📝 Заполните форму",
+            message: "Для получения кейса заполните форму:\n\n1. Введите ваш ID с GGStandoff\n2. Выберите кейс и промокод\n3. Укажите сумму депозита\n\nПосле проверки зачислим кейс в течение 24 часов!"
+        });
     };
     
     modal.style.display = 'flex';
