@@ -39,68 +39,121 @@ const cases = [
     }
 ];
 
-function main() {
+// ОЖИДАЕМ ПОЛНОЙ ЗАГРУЗКИ СТРАНИЦЫ
+function initApp() {
+    console.log("🚀 Starting app...");
+    
+    // Проверяем что элементы существуют
+    const grid = document.getElementById('cases-grid');
+    if (!grid) {
+        console.error("❌ Cannot find cases-grid element!");
+        return;
+    }
+    
+    console.log("✅ DOM loaded successfully");
+    
+    // Инициализируем Telegram Web App
     tg.ready();
     tg.expand();
+    
+    // Показываем кейсы
     renderCases();
 }
 
+// ПОКАЗЫВАЕМ КЕЙСЫ С ПРОВЕРКОЙ ОШИБОК
 function renderCases() {
-    const grid = document.getElementById('cases-grid');
-    grid.innerHTML = '';
-
-    cases.forEach(caseItem => {
-        const card = document.createElement('div');
-        card.className = 'case-card';
-        card.innerHTML = `
-            <img src="${caseItem.image}" alt="${caseItem.name}" class="case-image">
-            <div class="case-name">${caseItem.name}</div>
-            <div>Мин. депозит: ${caseItem.minDeposit}₽</div>
-        `;
-        card.addEventListener('click', () => {
-            openCaseModal(caseItem);
-        });
-        grid.appendChild(card);
-    });
-}
-
-function openCaseModal(caseItem) {
-    const modal = document.getElementById('caseModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalDescription = document.getElementById('modalDescription');
-    
-    modalImage.src = caseItem.image;
-    modalDescription.textContent = caseItem.description;
-    
-    // Кнопка ПОПОЛНИТЬ
-    document.getElementById('depositButton').onclick = () => {
-        tg.openLink(caseItem.refLink);
-    };
-    
-    // Кнопка ВЫВОД - ИСПРАВЛЕННАЯ ВЕРСИЯ
-    document.getElementById('payoutButton').onclick = () => {
-        // 1. Сначала закрываем модальное окно
-        document.getElementById('caseModal').style.display = 'none';
+    try {
+        const grid = document.getElementById('cases-grid');
+        console.log("🔄 Rendering cases...");
         
-        // 2. Ждем немного чтобы анимация закрытия завершилась
-        setTimeout(() => {
-            // 3. Открываем форму
-            tg.openLink("https://docs.google.com/forms/d/e/1FAIpQLSd-T5JG8bylYHv4p1pT3RuwlnwCZ6pEt9DYHx_mqUmJpsaC_g/viewform");
+        grid.innerHTML = '';
+        
+        cases.forEach((caseItem, index) => {
+            const card = document.createElement('div');
+            card.className = 'case-card';
+            card.innerHTML = `
+                <img src="${caseItem.image}" alt="${caseItem.name}" class="case-image">
+                <div class="case-name">${caseItem.name}</div>
+                <div>Мин. депозит: ${caseItem.minDeposit}₽</div>
+            `;
             
-            // 4. Показываем уведомление
-            tg.showPopup({
-                title: "📝 Заполните форму",
-                message: "Для получения кейса заполните форму!\n\nПосле проверки зачислим кейс в течение 24 часов!"
+            card.addEventListener('click', () => {
+                console.log(`🎯 Case clicked: ${caseItem.name}`);
+                openCaseModal(caseItem);
             });
-        }, 300); // Ждем 300ms
-    };
-    // ↑↑↑ ВНИМАНИЕ: здесь НЕТ лишней скобки }; ↑↑↑
-    
-    modal.style.display = 'flex';
+            
+            grid.appendChild(card);
+        });
+        
+        console.log("✅ Cases rendered successfully");
+        
+    } catch (error) {
+        console.error("❌ Error rendering cases:", error);
+    }
 }
 
+// ОТКРЫВАЕМ МОДАЛЬНОЕ ОКНО
+function openCaseModal(caseItem) {
+    try {
+        console.log("🔄 Opening modal for:", caseItem.name);
+        
+        const modal = document.getElementById('caseModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalDescription = document.getElementById('modalDescription');
+        
+        if (!modal || !modalImage || !modalDescription) {
+            console.error("❌ Modal elements not found!");
+            return;
+        }
+        
+        modalImage.src = caseItem.image;
+        modalDescription.textContent = caseItem.description;
+        
+        // Кнопка ПОПОЛНИТЬ
+        document.getElementById('depositButton').onclick = () => {
+            console.log("💰 Deposit clicked for:", caseItem.name);
+            tg.openLink(caseItem.refLink);
+        };
+        
+        // Кнопка ВЫВОД
+        document.getElementById('payoutButton').onclick = () => {
+            console.log("📝 Payout clicked for:", caseItem.name);
+            
+            // Закрываем модальное окно
+            modal.style.display = 'none';
+            
+            // Ждем и открываем форму
+            setTimeout(() => {
+                tg.openLink("https://docs.google.com/forms/d/e/1FAIpQLSd-T5JG8bylYHv4p1pT3RuwlnwCZ6pEt9DYHx_mqUmJpsaC_g/viewform");
+                
+                tg.showPopup({
+                    title: "📝 Заполните форму",
+                    message: "Для получения кейса заполните форму!\n\nПосле проверки зачислим кейс в течение 24 часов!"
+                });
+            }, 300);
+        };
+        
+        // Показываем модальное окно
+        modal.style.display = 'flex';
+        console.log("✅ Modal opened successfully");
+        
+    } catch (error) {
+        console.error("❌ Error opening modal:", error);
+    }
+}
+
+// ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА
 document.getElementById('closeModal').onclick = () => {
     document.getElementById('caseModal').style.display = 'none';
+    console.log("🔒 Modal closed");
 };
 
-document.addEventListener('DOMContentLoaded', main);
+// ЗАПУСКАЕМ ПРИЛОЖЕНИЕ ПОСЛЕ ЗАГРУЗКИ DOM
+document.addEventListener('DOMContentLoaded', initApp);
+
+// ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА - ЕСЛИ DOM УЖЕ ЗАГРУЖЕН
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
