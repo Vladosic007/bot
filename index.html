@@ -3,97 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GGStandoff | Бесплатные кейсы</title>
+    <title>#GGSTANDOFF | Бесплатные кейсы</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        * {
             margin: 0;
-            padding: 15px;
-            background: #18222d;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0a;
             color: #ffffff;
-            text-align: center;
+            padding: 15px;
+            min-height: 100vh;
         }
+
         .header {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #50a8eb;
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            border: 1px solid #00ffff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
         .cases-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            margin-bottom: 20px;
         }
+
         .case-card {
-            background: #2a3a48;
-            border-radius: 12px;
-            padding: 10px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 15px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff);
+            border-radius: 17px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .case-card:hover::before {
+            opacity: 1;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+
         .case-image {
             width: 100%;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #333;
         }
+
         .case-name {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            color: #00ffff;
+            margin-bottom: 5px;
         }
+
+        .case-deposit {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .promo-badge {
+            background: linear-gradient(45deg, #ff0080, #ff00ff);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        /* Модальное окно в стиле GGSTANDOFF */
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
         }
+
         .modal-content {
-            background: #18222d;
-            margin: 15px;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            margin: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            position: relative;
             max-width: 400px;
+            margin: 5% auto;
         }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #00ffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         .modal-image {
             width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #333;
         }
+
+        .modal-description {
+            color: #ccc;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
         .modal-buttons {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
         }
+
         .modal-button {
-            background: #50a8eb;
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .payout-button {
+            background: linear-gradient(45deg, #ff0080, #ff00ff);
+            color: white;
+        }
+
+        .instructions {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        .step-number {
+            color: #00ffff;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="header">🎁 Выбери свой кейс</div>
-    <div class="cases-grid" id="cases-grid"></div>
+    <div class="header">
+        <div class="title">#GGSTANDOFF</div>
+        <div class="subtitle">🎁 Получи кейс за депозит</div>
+    </div>
+
+    <div class="cases-grid" id="cases-grid">
+        <!-- Кейсы будут здесь -->
+    </div>
+
+    <div class="instructions">
+        <div class="step"><span class="step-number">1.</span> Выбери кейс</div>
+        <div class="step"><span class="step-number">2.</span> Пополни счёт с промокодом</div>
+        <div class="step"><span class="step-number">3.</span> Запроси вывод кейса</div>
+        <div class="step"><span class="step-number">4.</span> Получи кейс на сайте GGSTANDOFF</div>
+    </div>
 
     <div class="modal" id="caseModal">
         <div class="modal-content">
+            <button class="modal-close" id="closeModal">×</button>
             <img id="modalImage" class="modal-image" src="" alt="">
-            <div id="modalDescription"></div>
+            <div id="modalDescription" class="modal-description"></div>
             <div class="modal-buttons">
-                <button id="depositButton" class="modal-button">Пополнить</button>
-                <button id="payoutButton" class="modal-button">Запросить вывод</button>
-                <button id="closeModal" class="modal-button">Закрыть</button>
+                <button id="depositButton" class="modal-button">💳 Пополнить с промокодом</button>
+                <button id="payoutButton" class="modal-button payout-button">🎁 Запросить вывод кейса</button>
             </div>
         </div>
     </div>
