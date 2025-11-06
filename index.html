@@ -1,9 +1,11 @@
+[file name]: index.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>#GGSTANDOFF | Бесплатные кейсы</title>
+    <title>GGStandoff | Бесплатные кейсы</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -92,6 +94,9 @@
             border-radius: 10px;
             margin-bottom: 12px;
             border: 1px solid #333;
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
 
         .case-name {
@@ -157,6 +162,8 @@
             border-radius: 12px;
             margin-bottom: 20px;
             border: 2px solid #333;
+            max-width: 100%;
+            height: auto;
         }
 
         .modal-description {
@@ -211,6 +218,72 @@
             color: #00ffff;
             font-weight: bold;
         }
+
+        /* МОБИЛЬНЫЕ СТИЛИ - ВАЖНО! */
+        @media (max-width: 768px) {
+            .cases-grid {
+                grid-template-columns: 1fr !important; /* Одна колонка на мобильных */
+                gap: 12px;
+            }
+            
+            .case-card {
+                padding: 12px;
+                margin: 5px 0;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+                width: 90%;
+                max-width: none;
+            }
+            
+            .header {
+                font-size: 1.3rem;
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            /* Убираем сложные анимации для мобильных */
+            .case-card::before {
+                display: none;
+            }
+            
+            .case-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .modal-button:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+
+        /* Стили для состояний загрузки и ошибок */
+        .loading {
+            color: #00ffff;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+        }
+
+        .error {
+            color: #ff4444;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -220,7 +293,7 @@
     </div>
 
     <div class="cases-grid" id="cases-grid">
-        <!-- Кейсы будут здесь -->
+        <div class="loading">Загружаем кейсы...</div>
     </div>
 
     <div class="instructions">
@@ -242,6 +315,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=3.0"></script>
 </body>
 </html>
+[file content end]
